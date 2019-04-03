@@ -25,7 +25,7 @@ defmodule ExMark.Worker do
     start = System.monotonic_time(:microseconds)
     client |> Tesla.get(url)
     time_spent = System.monotonic_time(:microseconds) - start
-    IO.inspect "Request no. #{state.request_counter} to #{url} took: #{time_spent} microseconds"
+    # IO.inspect "Request no. #{state.request_counter} to #{url} took: #{time_spent} microseconds"
     state = %{request_counter: state.request_counter + 1, times: [time_spent | state.times]}
     {:noreply, state}
   end

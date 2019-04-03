@@ -20,18 +20,20 @@ defmodule ExMark do
     client = ExMark.Client.build()
 
     start = System.monotonic_time(:microseconds)
+
     for x <- 1..100 do
-      ExMark.Worker.send_request(client,url)
+      Tesla.get(client, url)
     end
 
-    ExMark.Worker.get_summary()
+    # ExMark.Worker.get_summary()
 
-    time_spent = System.monotonic_time(:microseconds) - start
+    time_spent = (System.monotonic_time(:microseconds) - start)/100
     IO.inspect time_spent
   end
 
   def test2(url, headers \\ []) do
-    client = ExMark.Client.build(headers)
+    # client = ExMark.Client.build(headers)
+    start = System.monotonic_time(:microseconds)
 
     pids = for x <- 1..100 do
       spawn(Listen, :call, [])
@@ -39,8 +41,30 @@ defmodule ExMark do
 
     tasks = for pid <- pids do
       Task.async(fn ->
-        send pid, {:send_request, client, url}
+        send pid, {:send_request, :a}
       end)
+    end
+
+    Task.await(List.last(tasks))
+    time_spent = System.monotonic_time(:microseconds) - start
+    IO.inspect time_spent
+    # ExMark.Worker.get_summary()
+  end
+
+  def test3 do
+    start = System.monotonic_time(:milliseconds)
+
+    Task.async(fn -> send_req end)
+    t2 = Task.async(fn -> send_req end)
+
+    Task.await(t2, 100000)
+    time_spent = (System.monotonic_time(:milliseconds) - start)
+    IO.inspect time_spent
+  end
+
+  def send_req do
+    for x <- 1..100 do
+      :httpc.request(:get, {'http://google.com', []}, [], [])
     end
   end
 end
