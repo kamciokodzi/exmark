@@ -22,3 +22,5 @@ erl_crash.dump
 # Ignore package tarball (built via "mix hex.build").
 exmark-*.tar
 
+# Ignore Elixir Language Support
+.elixir_ls
