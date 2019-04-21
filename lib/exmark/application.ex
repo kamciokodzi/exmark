@@ -5,7 +5,6 @@ defmodule ExMark.Application do
 
   def start(_type, _args) do
     children = [
-      ExMark.Worker
     ]
 
     opts = [strategy: :one_for_one, name: ExMark.Supervisor]
